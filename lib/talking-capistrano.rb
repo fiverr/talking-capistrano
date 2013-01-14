@@ -64,6 +64,6 @@ Capistrano::Configuration.instance.load do
 
       # Say notifications on deploy stages
       before "deploy", "deploy:say:about_to_deploy"
-      after   "deploy", "deploy:say:say_deploy_completed"
+      after   "deploy:cleanup", "deploy:say:say_deploy_completed"
 
 end
