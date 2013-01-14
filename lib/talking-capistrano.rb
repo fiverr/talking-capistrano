@@ -28,7 +28,7 @@ end
 
 ## In a capistrano scope
 Capistrano::Configuration.instance.load do
-  
+      
       set :speaker, TalkingCapistrano::say_speaker_name
       set :say_deploy_started, TalkingCapistrano::say_deploy_started(rails_env)
       set :say_deploy_completed, TalkingCapistrano::say_deploy_completed(rails_env)
@@ -40,10 +40,10 @@ Capistrano::Configuration.instance.load do
       namespace :deploy do
         namespace :say do
           task :about_to_deploy do
-            `#{say_command} #{say_deploy_started} -v #{speaker} &`
+            `#{say_command} #{say_deploy_started} -v '#{speaker}' &`
           end
           task :say_deploy_completed do
-            `#{say_command} #{say_deploy_completed} -v #{speaker} &`
+            `#{say_command} #{say_deploy_completed} -v '#{speaker}' &`
           end
         end
       end
