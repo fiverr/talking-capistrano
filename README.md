@@ -1,6 +1,6 @@
 # Talking::Capistrano
 
-TODO: Write a gem description
+Capisrano task to notify start|end|erros of a capistrano deploy execution
 
 ## Installation
 
@@ -18,7 +18,11 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Simply add:
+
+    require 'talking-capistrano'
+
+In your deploy.rb, enjoy
 
 ## Contributing
 
