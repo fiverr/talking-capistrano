@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["avner.cohen@fiverr.com"]
   gem.description   = %q{Capisrano task to notify start|end|erros of a capistrano deploy execution}
   gem.summary       = %q{Capisrano task to notify start|end|erros of a capistrano deploy execution}
-  gem.homepage      = "git@github.com:fiverr/talking-capistrano.git"
+  gem.homepage      = "https://github.com/fiverr/talking-capistrano.git"
 
   gem.files         = `git ls-files`.split($/)
   gem.files << "lib/talking-capistrano.json"
