@@ -2,6 +2,8 @@
 
 Capisrano task to notify start|end|erros of a capistrano deploy execution
 
+* Current code is based on thr `say` command in OSX, espeak can also be used, however, I didn't bother yet. PR always welcome
+
 ## Installation
 
 Add this line to your application's Gemfile:

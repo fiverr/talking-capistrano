@@ -42,9 +42,6 @@ Capistrano::Configuration.instance.load do
           task :about_to_deploy do
             `#{say_command} #{say_deploy_started} -v '#{speaker}' &`
           end
-          task :say_deploy_completed do
-            `#{say_command} #{say_deploy_completed} -v '#{speaker}' &`
-          end
         end
       end
 
@@ -64,6 +61,8 @@ Capistrano::Configuration.instance.load do
 
       # Say notifications on deploy stages
       before "deploy", "deploy:say:about_to_deploy"
-      after   "deploy:cleanup", "deploy:say:say_deploy_completed"
+      after   "deploy" do
+        `#{say_command} #{say_deploy_completed} -v '#{speaker}' &`
+      end
 
 end
