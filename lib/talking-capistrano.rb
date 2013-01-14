@@ -2,7 +2,6 @@ require 'capistrano'
 
 require "talking-capistrano/version"
 
-
 require 'JSON'
 
 module TalkingCapistrano
@@ -16,7 +15,7 @@ module TalkingCapistrano
   def self.say_deploy_failed(rails_env ="unknown env")
      get_item(:say_deploy_failed).sub!  "ENV", rails_env
   end
-  def self.say_speaker_name(rails_env ="unknown env")
+  def self.say_speaker_name
      get_item(:voices)
   end  
 
