@@ -22,9 +22,9 @@ module TalkingCapistrano
       target_chat = chats.find do |chat|
         chat.topic==@topic
       end
-        puts (pad_text text) unless target_chat.nil?
-
+        target_chat.send_message(pad_text text) unless target_chat.nil?
     end
+    
     def self.pad_text(text)
       "TalkingCapistrano: #{text}"
     end
