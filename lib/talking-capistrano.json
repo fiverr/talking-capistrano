@@ -2,8 +2,7 @@
   "Agnes",
   "Albert",
   "Alex",
-  "Bad",
-  "News",
+  "Bad News",
   "Bahh",
   "Bells",
   "Boing",
@@ -24,7 +23,11 @@
   "Victoria",
   "Whisper",
   "Zarvox"],
-"say_deploy_completed": ["Deploying to - ENV - Completed!"],
-"say_deploy_failed": ["Oops, Deploying to - ENV - went kaakehn!"],
-"say_deploy_started": ["Deploying to - ENV - Yahllah!"]
+"say_deploy_completed": ["Deploying to - [ENV] - Completed!"],
+"say_deploy_failed": ["Oops, Deploying to - [ENV] - went kaakehn!", 
+                              "Oops, Deploying to - [ENV] - failed!",
+                              "Deploy to [ENV] Fail - Fail - Fail !!"],
+"say_deploy_started": ["Deploying to - [ENV]- Yalaa!", 
+                                "Deploying to - [ENV]!",
+                                "[ENV] deploy is starting - Now!"]
 }
