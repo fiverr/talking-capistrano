@@ -5,7 +5,10 @@ module TalkingCapistrano
   module SkypeNotification
     require 'skypemac'   
 
-    class << self; attr_accessor :topic; end
+    class << self; 
+      attr_accessor :topic; 
+    end
+
     def self.set_notify(topic_exist)
       @notify = topic_exist
       @topic = topic_exist if topic_exist
@@ -19,7 +22,8 @@ module TalkingCapistrano
       target_chat = chats.find do |chat|
         chat.topic==@topic
       end
-        target_chat.send_message(pad_text text) unless target_chat.nil?
+        puts (pad_text text) unless target_chat.nil?
+
     end
     def self.pad_text(text)
       "TalkingCapistrano: #{text}"
@@ -28,15 +32,22 @@ module TalkingCapistrano
 end
 
 module TalkingCapistrano
+  
   @DATA_SET = JSON.load( File.read(File.join(File.dirname(__FILE__), '/talking-capistrano.json' )) )
-  def self.say_deploy_started(rails_env ="unknown env")
-     get_item(:say_deploy_started).sub!  "ENV", rails_env
+
+  class << self; 
+      attr_accessor :local_rails_env; 
   end
-  def self.say_deploy_completed(rails_env ="unknown env")
-     get_item(:say_deploy_completed).sub!  "ENV", rails_env
+
+  def self.say_deploy_started
+
+     get_item(:say_deploy_started).sub!  "ENV", @local_rails_env
   end
-  def self.say_deploy_failed(rails_env ="unknown env")
-     get_item(:say_deploy_failed).sub!  "ENV", rails_env
+  def self.say_deploy_completed
+     get_item(:say_deploy_completed).sub!  "ENV", @local_rails_env
+  end
+  def self.say_deploy_failed
+     get_item(:say_deploy_failed).sub!  "ENV", @local_rails_env
   end
   def self.say_speaker_name
      get_item(:voices)
@@ -49,16 +60,8 @@ module TalkingCapistrano
   end 
 end
 
-
-
-
 ## In a capistrano scope
 Capistrano::Configuration.instance.load do
-
-      set :speaker, TalkingCapistrano::say_speaker_name
-      set :say_deploy_started, TalkingCapistrano::say_deploy_started(rails_env)
-      set :say_deploy_completed, TalkingCapistrano::say_deploy_completed(rails_env)
-      set :say_deploy_failed, TalkingCapistrano::say_deploy_failed(rails_env)
 
       set :say_command, "say"
 
@@ -66,19 +69,21 @@ Capistrano::Configuration.instance.load do
       namespace :deploy do
         namespace :say do
           task :about_to_deploy do
-            `#{say_command} #{say_deploy_started} -v '#{speaker}' &`
+            `#{say_command} #{TalkingCapistrano::say_deploy_started} -v '#{TalkingCapistrano::say_speaker_name}' &`
           end
+          task :setup do
+              TalkingCapistrano.local_rails_env = rails_env
+          end                  
         end
       end
-
 
       #Overide capistrano code deploy, to add the on error hook, seems to not be called otherwise
       namespace :deploy do
         task :update_code, :except => { :no_release => true } do
           on_rollback do
-            `#{say_command} #{say_deploy_failed} -v #{speaker} &`;
+            `#{say_command} #{TalkingCapistrano::say_deploy_failed} -v #{TalkingCapistrano::say_speaker_name} &`;
               if TalkingCapistrano::SkypeNotification.notify?
-                 TalkingCapistrano::SkypeNotification.notify(say_deploy_failed)
+                 TalkingCapistrano::SkypeNotification.notify(TalkingCapistrano::say_deploy_failed)
               end            
               run "rm -rf #{release_path}; true" 
           end
@@ -93,27 +98,27 @@ Capistrano::Configuration.instance.load do
               TalkingCapistrano::SkypeNotification.set_notify(fetch(:skype_topic, false))
         end
         task :send_about_to_deploy do
-
           if TalkingCapistrano::SkypeNotification.notify?
-            TalkingCapistrano::SkypeNotification.notify(say_deploy_started)
+            TalkingCapistrano::SkypeNotification.notify(TalkingCapistrano::say_deploy_started)
           end
         end      
       end
     end
 
-
+      #setup tasks for say and skype
+      before "deploy", "deploy:skype_notifications:setup"
+      before "deploy", "deploy:say:setup"
 
       # Skype notifications on deploy stages
-      before "deploy", "deploy:skype_notifications:setup"
       before "deploy", "deploy:skype_notifications:send_about_to_deploy"      
 
       # Say notifications on deploy stages
       before "deploy", "deploy:say:about_to_deploy"
       # Say + Skype notifications on deploy stages - hack to avoid stack too deep exception
       after   "deploy" do
-        `#{say_command} #{say_deploy_completed} -v '#{speaker}' &`
+        `#{say_command} #{TalkingCapistrano::say_deploy_completed} -v '#{speaker}' &`
         if TalkingCapistrano::SkypeNotification.notify?
-           TalkingCapistrano::SkypeNotification.notify(say_deploy_completed)
+           TalkingCapistrano::SkypeNotification.notify(TalkingCapistrano::say_deploy_completed)
         end
       end
 
