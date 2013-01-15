@@ -1,8 +1,11 @@
 # Talking::Capistrano
 
 Capisrano task to notify start|end|erros of a capistrano deploy execution
+Current Notification methods supported:
+*. Skype Group - via some topic
+*. speaker voice - via OSX's `say` command 
 
-* Current code is based on thr `say` command in OSX, espeak can also be used, however, I didn't bother yet. PR always welcome
+* Current code is based on the `say` command in OSX and the 'skypemac' gem, espeak can also be used, however, I didn't bother yet. PR always welcome
 
 ## Installation
 
@@ -24,7 +27,14 @@ Simply add:
 
     require 'talking-capistrano'
 
-In your deploy.rb, enjoy
+In your Capfile, enjoy
+
+To get the Skype Notification to kick in, simply add, in the deploy.rb file (or the specific environment, eg. production.rb):
+
+    set :skype_topic, "Production Team"
+ 
+This will kick a search on the Skype chats with this as the topic, and will send a mesage to that group.
+If topic not found, it will simply be ignored.
 
 ## Contributing
 
