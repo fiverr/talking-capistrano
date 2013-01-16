@@ -3,7 +3,8 @@ require 'JSON'
 
 module TalkingCapistrano
   module SkypeNotification
-    require 'skypemac'   
+
+    require 'skype_script_invoker'   
 
     class << self; 
       attr_accessor :topic; 
@@ -18,13 +19,10 @@ module TalkingCapistrano
     end
 
     def self.notify(text)
-      chats = SkypeMac::Chat.recent_chats
-      target_chat = chats.find do |chat|
-        chat.topic==@topic
-      end
-        target_chat.send_message(pad_text text) unless target_chat.nil?
+      skyper = SkypeScriptInvoker.new(@topic)
+        skyper.send_message(pad_text text) unless @topic.nil?
     end
-    
+
     def self.pad_text(text)
       "TalkingCapistrano: #{text}"
     end
