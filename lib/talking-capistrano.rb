@@ -7,20 +7,23 @@ module TalkingCapistrano
     require 'skype_script_invoker'   
 
     class << self; 
-      attr_accessor :topic; 
+      attr_accessor :topic;
+      attr_accessor :skyper;
+
     end
 
     def self.set_notify(topic_exist)
       @notify = topic_exist
       @topic = topic_exist if topic_exist
+      @skyper = SkypeScriptInvoker.new(@topic)
     end
     def self.notify?
       @notify
     end
 
     def self.notify(text)
-      skyper = SkypeScriptInvoker.new(@topic)
-        skyper.send_message(pad_text text) unless @topic.nil?
+        #@skyper.send_message(pad_text text) unless @topic.nil?
+        puts "#{pad_text text}" unless @topic.nil?
     end
 
     def self.pad_text(text)
@@ -38,7 +41,6 @@ module TalkingCapistrano
   end
 
   def self.say_deploy_started
-
      get_item(:say_deploy_started).sub!  "ENV", @local_rails_env
   end
   def self.say_deploy_completed
@@ -80,9 +82,7 @@ Capistrano::Configuration.instance.load do
         task :update_code, :except => { :no_release => true } do
           on_rollback do
             `#{say_command} #{TalkingCapistrano::say_deploy_failed} -v #{TalkingCapistrano::say_speaker_name} &`;
-              if TalkingCapistrano::SkypeNotification.notify?
-                 TalkingCapistrano::SkypeNotification.notify(TalkingCapistrano::say_deploy_failed)
-              end            
+                TalkingCapistrano::SkypeNotification.notify(TalkingCapistrano::say_deploy_failed)
               run "rm -rf #{release_path}; true" 
           end
           strategy.deploy!
@@ -96,9 +96,7 @@ Capistrano::Configuration.instance.load do
               TalkingCapistrano::SkypeNotification.set_notify(fetch(:skype_topic, false))
         end
         task :send_about_to_deploy do
-          if TalkingCapistrano::SkypeNotification.notify?
             TalkingCapistrano::SkypeNotification.notify(TalkingCapistrano::say_deploy_started)
-          end
         end      
       end
     end
@@ -115,9 +113,7 @@ Capistrano::Configuration.instance.load do
       # Say + Skype notifications on deploy stages - hack to avoid stack too deep exception
       after   "deploy" do
         `#{say_command} #{TalkingCapistrano::say_deploy_completed} -v '#{TalkingCapistrano::say_speaker_name}' &`
-        if TalkingCapistrano::SkypeNotification.notify?
            TalkingCapistrano::SkypeNotification.notify(TalkingCapistrano::say_deploy_completed)
-        end
       end
 
 end
