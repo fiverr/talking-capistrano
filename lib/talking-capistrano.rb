@@ -22,8 +22,7 @@ module TalkingCapistrano
     end
 
     def self.notify(text)
-        #@skyper.send_message(pad_text text) unless @topic.nil?
-        puts "#{pad_text text}" unless @topic.nil?
+        @skyper.send_message(pad_text text) unless @topic.nil?
     end
 
     def self.pad_text(text)
