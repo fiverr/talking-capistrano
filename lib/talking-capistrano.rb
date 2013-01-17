@@ -26,7 +26,7 @@ module TalkingCapistrano
     end
 
     def self.pad_text(text)
-      "[::] #{text} [::]"
+      "-- #{text} --"
     end
   end
 end
