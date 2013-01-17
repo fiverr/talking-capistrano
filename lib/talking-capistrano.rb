@@ -1,5 +1,5 @@
 require "talking-capistrano/version"
-require 'JSON'
+require 'json'
 
 module TalkingCapistrano
   module SkypeNotification
@@ -26,7 +26,7 @@ module TalkingCapistrano
     end
 
     def self.pad_text(text)
-      "TalkingCapistrano: #{text}"
+      "[::] #{text} [::]"
     end
   end
 end
