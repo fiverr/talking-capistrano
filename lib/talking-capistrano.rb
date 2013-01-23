@@ -111,8 +111,9 @@ Capistrano::Configuration.instance.load do
       before "deploy", "deploy:say:about_to_deploy"
       # Say + Skype notifications on deploy stages - hack to avoid stack too deep exception
       after   "deploy" do
-        `#{say_command} #{TalkingCapistrano::say_deploy_completed} -v '#{TalkingCapistrano::say_speaker_name}' &`
-           TalkingCapistrano::SkypeNotification.notify(TalkingCapistrano::say_deploy_completed)
+        completed_str = TalkingCapistrano::say_deploy_completed
+        `#{say_command} #{completed_str} -v '#{TalkingCapistrano::say_speaker_name}' &`
+           TalkingCapistrano::SkypeNotification.notify(completed_str)
       end
 
 end
