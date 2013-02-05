@@ -34,7 +34,6 @@ class SkypeScriptInvoker
 
   def send_message(message)
     `osascript #{@@SCRIPT_PATH}skype_send_message.APPLESCRIPT '#{@target_chat_id}' '#{message}'`  unless @target_chat_id.nil?
-    #puts "Sending '#{@@target_chat_id}' '#{message}' " unless @target_chat_id.nil?
   end
 
 

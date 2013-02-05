@@ -17,6 +17,7 @@ module TalkingCapistrano
       @topic = topic_exist if topic_exist
       @skyper = SkypeScriptInvoker.new(@topic)
     end
+
     def self.notify?
       @notify
     end
@@ -26,7 +27,7 @@ module TalkingCapistrano
     end
 
     def self.pad_text(text)
-      "-- #{text} --"
+      "\\\\ #{text} //"
     end
   end
 end
@@ -39,8 +40,8 @@ module TalkingCapistrano
       attr_accessor :local_rails_env; 
   end
 
-  def self.say_deploy_started
-     get_item(:say_deploy_started).sub!  "ENV", @local_rails_env
+  def self.say_deploy_started(branch = nil)
+     get_item(:say_deploy_started).sub!  "ENV", "#{@local_rails_env}#{defined?(branch) "Branch: "+branch}"
   end
   def self.say_deploy_completed
      get_item(:say_deploy_completed).sub!  "ENV", @local_rails_env
@@ -68,10 +69,10 @@ Capistrano::Configuration.instance.load do
       namespace :deploy do
         namespace :say do
           task :about_to_deploy do
-            `#{say_command} #{TalkingCapistrano::say_deploy_started} -v '#{TalkingCapistrano::say_speaker_name}' &`
+            `#{say_command} #{TalkingCapistrano::say_deploy_started fetch(:branch, nil)} -v '#{TalkingCapistrano::say_speaker_name}' &`
           end
           task :setup do
-              TalkingCapistrano.local_rails_env = rails_env
+              TalkingCapistrano.local_rails_env = fetch(:stage, "-unknown env-")
           end                  
         end
       end
@@ -95,7 +96,7 @@ Capistrano::Configuration.instance.load do
               TalkingCapistrano::SkypeNotification.set_notify(fetch(:skype_topic, false))
         end
         task :send_about_to_deploy do
-            TalkingCapistrano::SkypeNotification.notify(TalkingCapistrano::say_deploy_started)
+            TalkingCapistrano::SkypeNotification.notify(TalkingCapistrano::say_deploy_started fetch(:branch, nil))
         end      
       end
     end
