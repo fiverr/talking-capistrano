@@ -41,7 +41,7 @@ module TalkingCapistrano
   end
 
   def self.say_deploy_started(branch = nil)
-      branch_txt = defined?(branch) ? "Branch: " + branch  ""
+      branch_txt = defined?(branch) ? "Branch: " + branch  : ""
      get_item(:say_deploy_started).sub!  "ENV", "#{@local_rails_env}#{branch_txt}"
   end
   def self.say_deploy_completed
