@@ -57,7 +57,7 @@ module TalkingCapistrano
   private
 
   def self.get_item(arr)
-      @DATA_SET[arr.to_s].shuffle(random: Time.now.to_i).first
+      @DATA_SET[arr.to_s].sample
   end 
 end
 
@@ -82,8 +82,9 @@ Capistrano::Configuration.instance.load do
       namespace :deploy do
         task :update_code, :except => { :no_release => true } do
           on_rollback do
-            `#{say_command} #{TalkingCapistrano::say_deploy_failed} -v #{TalkingCapistrano::say_speaker_name} &`;
-                TalkingCapistrano::SkypeNotification.notify(TalkingCapistrano::say_deploy_failed)
+            fail_str = TalkingCapistrano::say_deploy_failed
+            `#{say_command} #{fail_str} -v #{TalkingCapistrano::say_speaker_name} &`;
+                TalkingCapistrano::SkypeNotification.notify(fail_str)
               run "rm -rf #{release_path}; true" 
           end
           strategy.deploy!
