@@ -73,7 +73,7 @@ Capistrano::Configuration.instance.load do
             `#{say_command} #{TalkingCapistrano::say_deploy_started fetch(:branch, nil)} -v '#{TalkingCapistrano::say_speaker_name}' &`
           end
           task :setup do
-              TalkingCapistrano.local_rails_env = fetch(:stage, "-unknown env-")
+              TalkingCapistrano.local_rails_env = fetch(:stage, "-unknown env-").to_s
           end                  
         end
       end
