@@ -70,7 +70,7 @@ Capistrano::Configuration.instance.load do
       namespace :deploy do
         namespace :say do
           task :about_to_deploy do
-            `#{say_command} #{TalkingCapistrano::say_deploy_started fetch(:branch, nil)} -v '#{TalkingCapistrano::say_speaker_name}' &`
+            system("#{say_command} #{TalkingCapistrano::say_deploy_started fetch(:branch, nil)} -v '#{TalkingCapistrano::say_speaker_name}' &")
           end
           task :setup do
               TalkingCapistrano.local_rails_env = fetch(:stage, "-unknown env-").to_s
@@ -83,7 +83,7 @@ Capistrano::Configuration.instance.load do
         task :update_code, :except => { :no_release => true } do
           on_rollback do
             fail_str = TalkingCapistrano::say_deploy_failed
-            `#{say_command} #{fail_str} -v #{TalkingCapistrano::say_speaker_name} &`;
+            system("#{say_command} #{fail_str} -v #{TalkingCapistrano::say_speaker_name} &");
                 TalkingCapistrano::SkypeNotification.notify(fail_str)
               run "rm -rf #{release_path}; true" 
           end
