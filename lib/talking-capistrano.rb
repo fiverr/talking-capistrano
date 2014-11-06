@@ -64,7 +64,7 @@ end
 ## In a capistrano scope
 Capistrano::Configuration.instance.load do
 
-      set :say_command, "say"
+      set :say_command, fetch(:say_command, "say")
 
       #Say related tasks to notify deployments to the group
       namespace :deploy do

@@ -36,6 +36,17 @@ To get the Skype Notification to kick in, simply add, in the deploy.rb file (or 
 This will kick a search on the Skype chats with this as the topic, and will send a mesage to that group.
 If topic not found, it will simply be ignored.
 
+## Configuration
+
+Setting up the skype group for the notification:
+
+    set :skype_topic, "Production Team"
+
+
+Setting a null say command:
+
+    set :say_command, "echo"
+
 ## Contributing
 
 1. Fork it
